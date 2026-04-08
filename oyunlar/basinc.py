@@ -1,20 +1,24 @@
 import streamlit as st
-import random
 
 def oyun():
-    st.header("⚖️ Basınç Hesaplama Atölyesi")
-    tip = random.choice(["Katı", "Sıvı"])
-    if tip == "Katı":
-        f, g = random.randint(10, 100), random.randint(2, 10)
-        st.write(f"Ağırlık: {f}N, Yüzey Alanı: {g}S. Katı Basıncı kaçtır?")
-        dogru = f / g
+    st.header("⚖️ Basınç Deney Alanı")
+    st.write("Yüzey alanını ve ağırlığı değiştirerek basınç değişimini gözlemle!")
+
+    # Deney Parametreleri
+    agirlik = st.slider("Cismin Ağırlığı (N)", 10, 100, 20)
+    yuzey = st.radio("Yüzey Alanı (S)", [1, 2, 4], index=0, horizontal=True)
+
+    basinc = agirlik / yuzey
+    
+    # Görselleştirme (Bordo kutularla temsil)
+    st.write(f"### Hesaplanan Basınç: **{basinc} P**")
+    
+    # Basınca göre büyüyen/küçülen bir gösterge
+    st.progress(min(basinc / 100, 1.0))
+    
+    if basinc > 50:
+        st.warning("⚠️ Yüksek Basınç! Zemin zorlanıyor.")
     else:
-        h, d = random.randint(1, 10), random.randint(1, 5)
-        st.write(f"Derinlik: {h}m, Sıvı Yoğunluğu: {d}d. Sıvı Basıncı kaçtır? (g=1)")
-        dogru = h * d
+        st.success("✅ Güvenli Basınç.")
         
-    tahmin = st.number_input("Tahminin:", step=1.0)
-    if st.button("Hesapla"):
-        if tahmin == dogru:
-            st.success("Mükemmel hesaplama!"); return True
-        else: st.error(f"Hata! Doğru cevap {dogru} olmalıydı."); return False
+    st.info("Unutma: Ağırlık artarsa basınç artar, Yüzey alanı artarsa basınç azalır (Ters orantı).")
